@@ -1,1 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text2 Blog</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
 
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .page-title {
+      font-size: 32px;
+      color: #00bfff;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .post-card {
+      background-color: #1e1e1e;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .post-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    .post-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #00bfff;
+    }
+
+    .post-meta {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 16px;
+    }
+
+    .post-snippet {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      .page-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="grid">
+      <!-- Bài viết 1 -->
+      <a class="post-card" href="post-text2.html">
+        <div class="post-title">What is Text2?</div>
+        <div class="post-meta">August 6, 2025</div>
+        <div class="post-snippet">
+          Text2 is a software company focused on building smart tools powered by large language models. Our products include AI chat, contextual translation, and local-first LLM tools...
+        </div>
+      </a>
+
+      <!-- Bài viết 2 -->
+      <a class="post-card" href="#">
+        <div class="post-title">Building AI that runs offline</div>
+        <div class="post-meta">July 28, 2025</div>
+        <div class="post-snippet">
+          Discover how Text2 is developing offline-capable AI that runs directly in your browser — no API keys, no cloud latency, just speed and privacy...
+        </div>
+      </a>
+
+      <!-- Bài viết 3 -->
+      <a class="post-card" href="#">
+        <div class="post-title">Chat AI for humans</div>
+        <div class="post-meta">July 14, 2025</div>
+        <div class="post-snippet">
+          We’re designing a new generation of AI companions that remember, respond with emotion, and talk to you like a real friend. Here’s how...
+        </div>
+      </a>
+
+      <!-- Bài viết 4 -->
+      <a class="post-card" href="#">
+        <div class="post-title">Text2 Developer API (Preview)</div>
+        <div class="post-meta">June 30, 2025</div>
+        <div class="post-snippet">
+          Developers can now use the Text2 API to embed LLM tools into their own apps. From chat widgets to custom tasks — it's now in your hands...
+        </div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
