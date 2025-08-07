@@ -1,18 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Trang chủ</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text2 Blog</title>
   <style>
-    .post-item {
-      margin-bottom: 20px;
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .page-title {
+      font-size: 32px;
+      color: #00bfff;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .post-card {
+      background-color: #1e1e1e;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .post-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    .post-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #00bfff;
+    }
+
+    .post-meta {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 16px;
+    }
+
+    .post-snippet {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      .page-title {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Bài viết mới nhất</h1>
-  <div id="latest-posts"></div>
+  <div class="container">
+    <h1 class="page-title">Latest from Text2 Blog</h1>
+    <div class="grid" id="post-container">
+      <!-- Bài viết sẽ được JS thêm tự động -->
+    </div>
+  </div>
 
-  <script src="js/latest-posts.js"></script>
+  <script>
+    const postsToLoad = [
+      "post/what-is-text2.md",
+      "post/building-ai-offline.md",
+      "post/chat-ai-humans.md",
+      "post/text2-developer-api.md"
+      // Thêm đường dẫn file post tại đây
+    ];
+
+    async function loadLatestPosts() {
+      const posts = await Promise.all(postsToLoad.map(async (url) => {
+        const res = await fetch(url);
+        const raw = await res.text();
+
+        const frontmatterMatch = raw.match(/---([\s\S]*?)---/);
+        if (!frontmatterMatch) return null;
+
+        const metadata = {};
+        frontmatterMatch[1].trim().split('\n').forEach(line => {
+          const [key, ...value] = line.split(':');
+          metadata[key.trim()] = value.join(':').trim().replace(/^"|"$/g, '');
+        });
+
+        return {
+          ...metadata,
+          link: url.replace('.md', '.html')
+        };
+      }));
+
+      const latestPosts = posts
+        .filter(Boolean)
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 2); // Lấy 2 bài mới nhất
+
+      const container = document.getElementById('post-container');
+      container.innerHTML = ''; // Xoá các post mẫu nếu có
+
+      latestPosts.forEach(post => {
+        const card = document.createElement('a');
+        card.className = 'post-card';
+        card.href = post.link;
+
+        card.innerHTML = `
+          <div class="post-title">${post.title}</div>
+          <div class="post-meta">${formatDate(post.date)}</div>
+          <div class="post-snippet">${post.excerpt}</div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadLatestPosts);
+  </script>
 </body>
 </html>
