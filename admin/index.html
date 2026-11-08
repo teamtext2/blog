@@ -1173,6 +1173,42 @@
 </head>
 <body>
 
+  <!-- AUTH LOGIN GATE OVERLAY -->
+  <div class="auth-gate" id="authGate">
+    <div class="auth-card">
+      <img src="https://spac2.com/favicon.ico" alt="Spac2" class="auth-icon" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'white\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
+      <div>
+        <h2 class="auth-title">Spac2 Admin Gate</h2>
+        <p class="auth-desc">Nhập đường dẫn Cloudflare Worker, Mã bảo mật và ImgBB API Key để truy cập.</p>
+      </div>
+
+      <div class="auth-form">
+        <div class="form-group">
+          <label for="loginWorkerInput">1. Đường dẫn Cloudflare Worker *</label>
+          <input type="text" id="loginWorkerInput" placeholder="https://spac2-blog-worker.xxx.workers.dev" autocomplete="off">
+          <span style="font-size: 11px; color: var(--text-muted);">Hoặc dán trực tiếp link: <code>url?key=MÃ_BẢO_MẬT</code></span>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPasskeyInput">2. Mã bảo mật (ADMIN_SECRET) *</label>
+          <input type="password" id="loginPasskeyInput" placeholder="Nhập mã bảo mật (ví dụ: 0372996420)" autocomplete="current-password">
+        </div>
+
+        <div class="form-group">
+          <label for="loginImgbbKeyInput">3. ImgBB API Key (Upload ảnh tự động)</label>
+          <input type="password" id="loginImgbbKeyInput" placeholder="Nhập ImgBB API Key (32 ký tự)" autocomplete="off">
+          <span style="font-size: 11px; color: var(--text-muted);">Lấy key miễn phí tại: <a href="https://api.imgbb.com/" target="_blank" style="color: var(--accent);">api.imgbb.com</a></span>
+        </div>
+
+        <div id="loginError" style="font-size: 12px; color: var(--danger); display: none; line-height: 1.4; padding: 8px 12px; background: rgba(248,81,73,0.1); border-radius: 6px; border: 1px solid rgba(248,81,73,0.3);"></div>
+
+        <button id="btnLogin" class="btn btn-primary" style="padding: 10px; width: 100%; font-size: 14px; margin-top: 4px;">
+          🔓 Mở Khóa Admin Console
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Suspended Header -->
   <div class="header-anchor">
     <header class="floating-header">
@@ -1180,16 +1216,18 @@
         <img src="https://spac2.com/favicon.ico" alt="Spac2" class="brand-icon" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'white\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
         <span class="brand-title">spac2 admin</span>
         <span class="badge-cmd">console v2.0</span>
+        <span class="badge-auth" id="headerAuthBadge" style="display: none;">● Đã xác thực</span>
       </a>
 
       <div class="header-actions">
         <button id="btnOpenSettings" class="btn btn-ghost">
           ⚙ Cấu hình Worker / GitHub
         </button>
+        <button id="btnLogout" class="btn btn-danger" style="display: none;" title="Khóa màn hình và đăng xuất">
+          Khóa / Thoát
+        </button>
         <a href="../index.html" class="btn btn-ghost">&larr; Xem Blog</a>
       </div>
-    </header>
-  </div>
     </header>
   </div>
 
@@ -1573,6 +1611,10 @@ Nội dung bài viết chuẩn công nghệ..."></textarea>
           <label for="cfgWorkerUrl">URL Cloudflare Worker</label>
           <input type="url" id="cfgWorkerUrl" placeholder="https://blog-worker.your-subdomain.workers.dev">
         </div>
+        <div class="form-group">
+          <label for="cfgAdminSecret">Mã bảo mật Passkey (ADMIN_SECRET)</label>
+          <input type="password" id="cfgAdminSecret" placeholder="Nhập mã bảo mật (ví dụ: 0372996420)">
+        </div>
       </div>
 
       <!-- ImgBB API Key -->
@@ -1613,7 +1655,17 @@ Nội dung bài viết chuẩn công nghệ..."></textarea>
 
   <script>
     (function() {
-      // Elements
+      // Elements Auth Gate
+      const authGate = document.getElementById('authGate');
+      const loginWorkerInput = document.getElementById('loginWorkerInput');
+      const loginPasskeyInput = document.getElementById('loginPasskeyInput');
+      const loginImgbbKeyInput = document.getElementById('loginImgbbKeyInput');
+      const btnLogin = document.getElementById('btnLogin');
+      const loginError = document.getElementById('loginError');
+      const btnLogout = document.getElementById('btnLogout');
+      const headerAuthBadge = document.getElementById('headerAuthBadge');
+
+      // Elements Editor & Post Form
       const postTitle = document.getElementById('postTitle');
       const postSlug = document.getElementById('postSlug');
       const postDate = document.getElementById('postDate');
@@ -1645,6 +1697,7 @@ Nội dung bài viết chuẩn công nghệ..."></textarea>
 
       const cfgMode = document.getElementById('cfgMode');
       const cfgWorkerUrl = document.getElementById('cfgWorkerUrl');
+      const cfgAdminSecret = document.getElementById('cfgAdminSecret');
       const cfgImgbbKey = document.getElementById('cfgImgbbKey');
       const cfgGhToken = document.getElementById('cfgGhToken');
       const cfgGhOwner = document.getElementById('cfgGhOwner');
@@ -1666,25 +1719,151 @@ Nội dung bài viết chuẩn công nghệ..."></textarea>
       postDate.value = `${dd}/${mm}/${yyyy}`;
 
       // ==========================================
-      // 1. CONFIGURATION SYSTEM
+      // 1. AUTHENTICATION & CONFIGURATION SYSTEM
       // ==========================================
       const currentUrl = new URL(window.location.href);
+      const urlKey = currentUrl.searchParams.get("key") || (window.location.hash.includes("key=") ? window.location.hash.split("key=")[1] : null);
       const urlWorker = currentUrl.searchParams.get("worker");
       const urlImgbb = currentUrl.searchParams.get("imgbb");
 
       const savedConfig = JSON.parse(localStorage.getItem('spac2_blog_config') || '{}');
       
-      if (urlWorker) {
-        savedConfig.workerUrl = urlWorker;
+      if (urlWorker) savedConfig.workerUrl = urlWorker;
+      if (urlKey) savedConfig.adminSecret = urlKey;
+      if (urlImgbb) savedConfig.imgbbKey = urlImgbb;
+
+      // Nạp giá trị đã lưu vào các ô đăng nhập
+      loginWorkerInput.value = savedConfig.workerUrl || '';
+      loginPasskeyInput.value = savedConfig.adminSecret || '';
+      loginImgbbKeyInput.value = savedConfig.imgbbKey || '';
+
+      function checkAuthStatus() {
+        const sessionAuth = sessionStorage.getItem('spac2_admin_authenticated');
+        if (sessionAuth === 'true') {
+          authGate.style.display = 'none';
+          if (headerAuthBadge) headerAuthBadge.style.display = 'inline-block';
+          if (btnLogout) btnLogout.style.display = 'inline-block';
+        } else {
+          authGate.style.display = 'flex';
+          if (headerAuthBadge) headerAuthBadge.style.display = 'none';
+          if (btnLogout) btnLogout.style.display = 'none';
+        }
       }
-      if (urlImgbb) {
-        savedConfig.imgbbKey = urlImgbb;
-      }
-      localStorage.setItem('spac2_blog_config', JSON.stringify(savedConfig));
+      checkAuthStatus();
+
+      // Hỗ trợ ấn phím Enter trên bất kỳ ô nhập nào để đăng nhập ngay
+      [loginWorkerInput, loginPasskeyInput, loginImgbbKeyInput].forEach(inp => {
+        inp.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            btnLogin.click();
+          }
+        });
+      });
+
+      // Tự động phân tách nếu người dùng dán link dạng url?key=...
+      loginWorkerInput.addEventListener('input', () => {
+        const val = loginWorkerInput.value.trim();
+        try {
+          if (val.includes("?") && val.includes("key=")) {
+            const parsed = new URL(val);
+            const k = parsed.searchParams.get("key");
+            if (k) {
+              loginPasskeyInput.value = k;
+              parsed.searchParams.delete("key");
+              loginWorkerInput.value = parsed.origin + parsed.pathname;
+            }
+          }
+        } catch (e) {}
+      });
+
+      btnLogin.onclick = async () => {
+        let wUrl = loginWorkerInput.value.trim();
+        const pKey = loginPasskeyInput.value.trim();
+        const imgKey = loginImgbbKeyInput.value.trim();
+
+        if (!wUrl) {
+          loginError.textContent = "Vui lòng nhập đường dẫn Cloudflare Worker!";
+          loginError.style.display = 'block';
+          loginWorkerInput.focus();
+          return;
+        }
+
+        if (!pKey) {
+          loginError.textContent = "Vui lòng nhập mã bảo mật (ADMIN_SECRET)!";
+          loginError.style.display = 'block';
+          loginPasskeyInput.focus();
+          return;
+        }
+
+        loginError.style.display = 'none';
+        btnLogin.disabled = true;
+        btnLogin.textContent = "⏳ Đang kiểm tra mã với Worker...";
+
+        try {
+          const cleanUrl = wUrl.replace(/\/$/, '');
+          const res = await fetch(`${cleanUrl}/api/auth`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Admin-Secret': pKey
+            },
+            body: JSON.stringify({ key: pKey })
+          });
+
+          const authData = await res.json().catch(() => ({}));
+
+          if (!res.ok || !authData.success) {
+            btnLogin.disabled = false;
+            btnLogin.textContent = "🔓 Mở Khóa Admin Console";
+            loginError.textContent = authData.message || `Mã bảo mật không đúng hoặc Worker từ chối (HTTP ${res.status})!`;
+            loginError.style.display = 'block';
+            return;
+          }
+
+          // Xác thực thành công!
+          savedConfig.workerUrl = cleanUrl;
+          savedConfig.adminSecret = pKey;
+          if (imgKey) savedConfig.imgbbKey = imgKey;
+
+          localStorage.setItem('spac2_blog_config', JSON.stringify(savedConfig));
+          sessionStorage.setItem('spac2_admin_authenticated', 'true');
+
+          // Cập nhật lại form Settings
+          cfgWorkerUrl.value = cleanUrl;
+          cfgAdminSecret.value = pKey;
+          if (imgKey) cfgImgbbKey.value = imgKey;
+
+          authGate.style.display = 'none';
+          if (headerAuthBadge) headerAuthBadge.style.display = 'inline-block';
+          if (btnLogout) btnLogout.style.display = 'inline-block';
+
+          logToTerminal(`[AUTH] Xác thực mã bảo mật thành công!`, 'success');
+          logToTerminal(`[WORKER] Đã kết nối Worker: ${cleanUrl}`, 'info');
+          if (savedConfig.imgbbKey) {
+            logToTerminal(`[IMGBB] Đã nạp ImgBB API Key: ●●●●●●●●`, 'info');
+          }
+
+        } catch (err) {
+          btnLogin.disabled = false;
+          btnLogin.textContent = "🔓 Mở Khóa Admin Console";
+          loginError.textContent = `Không thể kết nối đến Worker: ${err.message}. Hãy chắc chắn URL Worker đúng và đã deploy!`;
+          loginError.style.display = 'block';
+        }
+      };
+
+      btnLogout.onclick = () => {
+        sessionStorage.removeItem('spac2_admin_authenticated');
+        authGate.style.display = 'flex';
+        if (headerAuthBadge) headerAuthBadge.style.display = 'none';
+        if (btnLogout) btnLogout.style.display = 'none';
+        logToTerminal(`[AUTH] Đã khóa bảng điều khiển.`, 'warn');
+      };
 
       // Load Settings from LocalStorage into Settings Modal
       cfgMode.value = savedConfig.mode || 'worker';
       cfgWorkerUrl.value = savedConfig.workerUrl || '';
+      cfgAdminSecret.value = savedConfig.adminSecret || '';
       cfgImgbbKey.value = savedConfig.imgbbKey || '';
       cfgGhToken.value = savedConfig.ghToken || '';
       cfgGhOwner.value = savedConfig.ghOwner || 'teamtext2';
@@ -1710,6 +1889,7 @@ Nội dung bài viết chuẩn công nghệ..."></textarea>
         const config = {
           mode: cfgMode.value,
           workerUrl: cfgWorkerUrl.value.trim(),
+          adminSecret: cfgAdminSecret.value.trim(),
           imgbbKey: cfgImgbbKey.value.trim(),
           ghToken: cfgGhToken.value.trim(),
           ghOwner: cfgGhOwner.value.trim(),
@@ -1718,6 +1898,7 @@ Nội dung bài viết chuẩn công nghệ..."></textarea>
         };
         savedConfig.imgbbKey = config.imgbbKey;
         savedConfig.workerUrl = config.workerUrl;
+        savedConfig.adminSecret = config.adminSecret;
         localStorage.setItem('spac2_blog_config', JSON.stringify(config));
         updateRepoDisplay();
         logToTerminal(`[CONFIG] Đã lưu cấu hình (${config.mode} mode)`, 'success');
@@ -2936,6 +3117,7 @@ ${metaTagsHtml}
 
       btnTestConnection.onclick = async () => {
         const mode = cfgMode.value;
+        const passkey = cfgAdminSecret.value.trim();
         logToTerminal(`$ test-connection --mode=${mode}`, 'cmd');
 
         if (mode === 'worker') {
@@ -2944,14 +3126,21 @@ ${metaTagsHtml}
             logToTerminal(`[ERROR] Chưa nhập URL Cloudflare Worker!`, 'error');
             return;
           }
-          logToTerminal(`Đang kiểm tra kết nối với Worker tại: ${wUrl}...`);
+          logToTerminal(`Đang kiểm tra xác thực mã bảo mật với Worker tại: ${wUrl}...`);
           try {
-            const res = await fetch(`${wUrl.replace(/\/$/, '')}/api/auth`);
+            const res = await fetch(`${wUrl.replace(/\/$/, '')}/api/auth`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Admin-Secret': passkey
+              },
+              body: JSON.stringify({ key: passkey })
+            });
             const data = await res.json();
             if (res.ok && data.success) {
-              logToTerminal(`[SUCCESS] Worker sẵn sàng hoạt động!`, 'success');
+              logToTerminal(`[SUCCESS] Xác thực mã bảo mật thành công! Worker sẵn sàng.`, 'success');
             } else {
-              logToTerminal(`[ERROR] Worker phản hồi: ${data.message || res.status}`, 'error');
+              logToTerminal(`[ERROR] Worker từ chối: ${data.message || res.status}`, 'error');
             }
           } catch (e) {
             logToTerminal(`[ERROR] Không thể kết nối tới Worker: ${e.message}`, 'error');
@@ -3098,6 +3287,7 @@ await putGithubFile(config, 'p/' + slug + '.html', htmlContent);
 
         const config = JSON.parse(localStorage.getItem('spac2_blog_config') || '{}');
         const mode = config.mode || 'worker';
+        const passkey = config.adminSecret || '';
 
         btnPublish.disabled = true;
         statusIndicator.textContent = "● Đang xử lý...";
@@ -3127,6 +3317,8 @@ await putGithubFile(config, 'p/' + slug + '.html', htmlContent);
               author: data.author,
               tags: tagsArr,
               htmlContent: htmlContent,
+              adminSecret: passkey,
+              key: passkey,
               githubToken: config.ghToken || undefined,
               githubOwner: config.ghOwner || 'teamtext2',
               githubRepo: config.ghRepo || 'blog',
@@ -3136,7 +3328,8 @@ await putGithubFile(config, 'p/' + slug + '.html', htmlContent);
             const res = await fetch(`${workerUrl}/api/publish`, {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-Admin-Secret': passkey
               },
               body: JSON.stringify(payload)
             });
