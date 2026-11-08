@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Spac2 Blog">
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Primary SEO Metadata -->
+  <title>Spac2 Blog — Tối Giản Cực Đoan &amp; Công Nghệ</title>
+  <meta name="title" content="Spac2 Blog — Tối Giản Cực Đoan &amp; Công Nghệ">
+  <meta name="description" content="Spac2 Blog - Nơi chia sẻ kiến trúc hệ thống, tư duy công nghệ và triết lý tối giản cực đoan trong thiết kế.">
+  <meta name="keywords" content="Spac2, Spac2 Blog, blog.spac2.com, Minimalist Blog, Serverless Architecture, Web Technology">
+  <meta name="author" content="Spac2 Team">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://blog.spac2.com/">
+
+  <!-- Favicon & Touch Icons -->
+  <link rel="icon" href="https://spac2.com/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://spac2.com/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://spac2.com/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="https://spac2.com/android-chrome-512x512.png">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Spac2 Blog">
+  <meta property="og:url" content="https://blog.spac2.com/">
+  <meta property="og:title" content="Spac2 Blog — Tối Giản Cực Đoan &amp; Công Nghệ">
+  <meta property="og:description" content="Nơi chia sẻ kiến trúc hệ thống, tư duy công nghệ và triết lý tối giản cực đoan trong thiết kế.">
+  <meta property="og:image" content="https://spac2.com/favicon.ico">
+  <meta property="og:locale" content="vi_VN">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@spac2com">
+  <meta name="twitter:creator" content="@spac2com">
+  <meta name="twitter:url" content="https://blog.spac2.com/">
+  <meta name="twitter:title" content="Spac2 Blog — Tối Giản Cực Đoan &amp; Công Nghệ">
+  <meta name="twitter:description" content="Nơi chia sẻ kiến trúc hệ thống, tư duy công nghệ và triết lý tối giản cực đoan trong thiết kế.">
+  <meta name="twitter:image" content="https://spac2.com/favicon.ico">
+
+  <!-- Schema.org JSON-LD Structured Data for WebSite -->
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://blog.spac2.com/",
+      "name": "Spac2 Blog",
+      "description": "Nơi chia sẻ kiến trúc hệ thống, tư duy công nghệ và triết lý tối giản cực đoan trong thiết kế.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Spac2",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://spac2.com/favicon.ico"
+        }
+      }
+    }
+  ]
+  </script>
+
+  <!-- Typography Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #FAFAF9;
+      --surface: #FFFFFF;
+      --text-main: #111111;
+      --text-muted: #737373;
+      --text-subtle: #A3A3A3;
+      --border: rgba(0, 0, 0, 0.07);
+      --border-hover: rgba(0, 0, 0, 0.16);
+      --accent: #000000;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-pill: 9999px;
+      --shadow-float: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 14px 34px -8px rgba(0, 0, 0, 0.08);
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding-bottom: 80px;
+    }
+
+    /* Floating Suspended Pill Header */
+    .header-anchor {
+      position: sticky;
+      top: 18px;
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      padding: 0 16px;
+      pointer-events: none;
+    }
+
+    .floating-header {
+      pointer-events: auto;
+      width: min(100%, 780px);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-float);
+      border-radius: var(--radius-pill);
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition);
+    }
+
+    .floating-header:hover {
+      border-color: var(--border-hover);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      transition: transform 0.25s ease;
+    }
+
+    .brand:hover .brand-icon {
+      transform: scale(1.06) rotate(3deg);
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.04);
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      transition: var(--transition);
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .nav-link.admin-btn {
+      color: #111;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background: #FFFFFF;
+    }
+
+    .nav-link.admin-btn:hover {
+      background: #111;
+      color: #FFF;
+      border-color: #111;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 44px 20px 0;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 20px 0 36px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 36px;
+    }
+
+    .hero-tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .hero-tagline::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+    }
+
+    .hero-title {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      line-height: 1.25;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 580px;
+      line-height: 1.6;
+    }
+
+    /* Search & Stats Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 380px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 9px 16px 9px 36px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text-main);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--text-main);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-subtle);
+      pointer-events: none;
+    }
+
+    .post-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Article List */
+    .post-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .post-card {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .post-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .post-thumb-wrapper {
+      position: relative;
+      width: 100%;
+      height: 130px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #EEEEEE;
+    }
+
+    .post-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .post-card:hover .post-thumb {
+      transform: scale(1.04);
+    }
+
+    .post-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .post-tag {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text-main);
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-weight: 500;
+      font-size: 11px;
+    }
+
+    .post-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.3px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      transition: color 0.2s ease;
+    }
+
+    .post-card:hover .post-title {
+      color: #000;
+    }
+
+    .post-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .post-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-subtle);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    /* Footer */
+    footer {
+      max-width: 780px;
+      margin: 60px auto 0;
+      padding: 24px 20px 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-subtle);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--text-main);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 640px) {
+      .post-card {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .post-thumb-wrapper {
+        height: 170px;
+      }
+      .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-box {
+        max-width: 100%;
+      }
+      .brand-title {
+        font-size: 14px;
+      }
+      .floating-header {
+        padding: 6px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Suspended Header -->
+  <div class="header-anchor">
+    <header class="floating-header">
+      <a href="/" class="brand">
+        <img src="https://spac2.com/favicon.ico" alt="Spac2" class="brand-icon" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'black\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
+        <span class="brand-title">spac2</span>
+        <span class="brand-badge">blog</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="https://spac2.com" target="_blank" rel="noopener" class="nav-link">spac2.com</a>
+        <a href="admin/index.html" class="nav-link admin-btn">Admin</a>
+      </nav>
+    </header>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+    <section class="hero">
+      <div class="hero-tagline">Pure Minimalist Architecture</div>
+      <h1 class="hero-title">Spac2 Blog</h1>
+      <p class="hero-desc">
+        Suy nghĩ, tài liệu kỹ thuật và những ghi chép về công nghệ tối giản, kiến trúc serverless tốc độ cao.
+      </p>
+    </section>
+
+    <!-- Search & Filter Bar -->
+    <div class="filter-bar">
+      <div class="search-box">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm bài viết..." autocomplete="off">
+      </div>
+      <div class="post-count" id="postCount">Đang tải bài viết...</div>
+    </div>
+
+    <!-- Posts Container -->
+    <div class="post-list" id="postList">
+      <!-- Sẽ được render tự động từ list.js -->
+    </div>
+
+    <footer>
+      <span>&copy; 2026 Spac2. Giao diện tối giản cực đoan.</span>
+      <div>
+        <a href="sitemap.xml" target="_blank">Sitemap</a> &bull;
+        <a href="https://spac2.com" target="_blank">spac2.com</a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Load file danh sách bài viết list.js -->
+  <script src="list.js"></script>
+
+  <script>
+    (function() {
+      const postListEl = document.getElementById('postList');
+      const searchInputEl = document.getElementById('searchInput');
+      const postCountEl = document.getElementById('postCount');
+
+      const posts = Array.isArray(window.BLOG_POSTS) ? window.BLOG_POSTS : [];
+
+      function render(items) {
+        if (!items || items.length === 0) {
+          postListEl.innerHTML = `
+            <div class="empty-state">
+              Không tìm thấy bài viết nào phù hợp.
+            </div>
+          `;
+          postCountEl.textContent = `0 bài viết`;
+          return;
+        }
+
+        postCountEl.textContent = `${items.length} bài viết`;
+
+        postListEl.innerHTML = items.map(post => {
+          const postUrl = post.slug.startsWith('http') 
+            ? post.slug 
+            : (post.slug.endsWith('.html') ? `p/${post.slug}` : `p/${post.slug}.html`);
+
+          const tagsHtml = Array.isArray(post.tags) && post.tags.length > 0
+            ? post.tags.map(t => `<span class="post-tag">${escapeHtml(t)}</span>`).join('')
+            : '';
+
+          const thumb = post.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop';
+
+          return `
+            <article>
+              <a href="${postUrl}" class="post-card">
+                <div class="post-thumb-wrapper">
+                  <img src="${thumb}" alt="${escapeHtml(post.title)}" class="post-thumb" loading="lazy">
+                </div>
+                <div class="post-body">
+                  <div>
+                    <div class="post-meta">
+                      ${tagsHtml}
+                      <span>&bull;</span>
+                      <time>${escapeHtml(post.date || 'Gần đây')}</time>
+                      ${post.readTime ? `<span>&bull;</span><span>${escapeHtml(post.readTime)}</span>` : ''}
+                    </div>
+                    <h2 class="post-title">${escapeHtml(post.title)}</h2>
+                    <p class="post-desc">${escapeHtml(post.desc || '')}</p>
+                  </div>
+                  <div class="post-footer">
+                    <span>${escapeHtml(post.author || 'Spac2')}</span>
+                    <span>&rarr; Đọc tiếp</span>
+                  </div>
+                </div>
+              </a>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      // Initial Render
+      render(posts);
+
+      // Search functionality
+      searchInputEl.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        if (!query) {
+          render(posts);
+          return;
+        }
+
+        const filtered = posts.filter(p => {
+          const title = (p.title || '').toLowerCase();
+          const desc = (p.desc || '').toLowerCase();
+          const tags = Array.isArray(p.tags) ? p.tags.join(' ').toLowerCase() : '';
+          return title.includes(query) || desc.includes(query) || tags.includes(query);
+        });
+
+        render(filtered);
+      });
+    })();
+  </script>
+</body>
+</html>
+

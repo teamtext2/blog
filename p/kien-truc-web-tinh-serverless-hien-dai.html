@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Spac2 Blog">
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Primary SEO Metadata -->
+  <title>Kiến Trúc Web Tĩnh Serverless Với Cloudflare Workers Và GitHub API | Spac2 Blog</title>
+  <meta name="title" content="Kiến Trúc Web Tĩnh Serverless Với Cloudflare Workers Và GitHub API | Spac2 Blog">
+  <meta name="description" content="Cách chúng tôi xây dựng hệ thống blog siêu nhẹ, không cần cơ sở dữ liệu cồng kềnh, chi phí 0đ và thời gian tải trang dưới 200ms trên toàn cầu.">
+  <meta name="keywords" content="Architecture, Serverless, Cloudflare, Spac2, Spac2 Blog, blog.spac2.com">
+  <meta name="author" content="Spac2 Dev">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://blog.spac2.com/p/kien-truc-web-tinh-serverless-hien-dai.html">
+
+  <!-- Favicon & Touch Icons -->
+  <link rel="icon" href="https://spac2.com/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://spac2.com/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://spac2.com/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="https://spac2.com/android-chrome-512x512.png">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Spac2 Blog">
+  <meta property="og:url" content="https://blog.spac2.com/p/kien-truc-web-tinh-serverless-hien-dai.html">
+  <meta property="og:title" content="Kiến Trúc Web Tĩnh Serverless Với Cloudflare Workers Và GitHub API">
+  <meta property="og:description" content="Cách chúng tôi xây dựng hệ thống blog siêu nhẹ, không cần cơ sở dữ liệu cồng kềnh, chi phí 0đ và thời gian tải trang dưới 200ms trên toàn cầu.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="article:published_time" content="2026-11-05T08:00:00+07:00">
+  <meta property="article:modified_time" content="2026-11-05T08:00:00+07:00">
+  <meta property="article:author" content="Spac2 Dev">
+  <meta property="article:section" content="Technology & Architecture">
+  <meta property="article:tag" content="Architecture">
+  <meta property="article:tag" content="Serverless">
+  <meta property="article:tag" content="Cloudflare">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@spac2com">
+  <meta name="twitter:creator" content="@spac2com">
+  <meta name="twitter:url" content="https://blog.spac2.com/p/kien-truc-web-tinh-serverless-hien-dai.html">
+  <meta name="twitter:title" content="Kiến Trúc Web Tĩnh Serverless Với Cloudflare Workers Và GitHub API">
+  <meta name="twitter:description" content="Cách chúng tôi xây dựng hệ thống blog siêu nhẹ, không cần cơ sở dữ liệu cồng kềnh, chi phí 0đ và thời gian tải trang dưới 200ms trên toàn cầu.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop">
+
+  <!-- Schema.org JSON-LD Structured Data for Article -->
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://blog.spac2.com/p/kien-truc-web-tinh-serverless-hien-dai.html"
+      },
+      "headline": "Kiến Trúc Web Tĩnh Serverless Với Cloudflare Workers Và GitHub API",
+      "description": "Cách chúng tôi xây dựng hệ thống blog siêu nhẹ, không cần cơ sở dữ liệu cồng kềnh, chi phí 0đ và thời gian tải trang dưới 200ms trên toàn cầu.",
+      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+      "author": {
+        "@type": "Organization",
+        "name": "Spac2 Dev",
+        "url": "https://spac2.com"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Spac2",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://spac2.com/favicon.ico"
+        }
+      },
+      "datePublished": "2026-11-05T08:00:00+07:00",
+      "dateModified": "2026-11-05T08:00:00+07:00"
+    }
+  ]
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #FAFAF9;
+      --surface: #FFFFFF;
+      --text-main: #111111;
+      --text-muted: #666666;
+      --text-subtle: #999999;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.16);
+      --code-bg: #18181B;
+      --code-color: #F4F4F5;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-pill: 9999px;
+      --shadow-float: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+
+    .header-anchor {
+      position: sticky;
+      top: 18px;
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      padding: 0 16px;
+      pointer-events: none;
+    }
+
+    .floating-header {
+      pointer-events: auto;
+      width: min(100%, 780px);
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-float);
+      border-radius: var(--radius-pill);
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+    }
+
+    .back-btn {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 6px 14px;
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover { background: rgba(0, 0, 0, 0.08); }
+
+    .article-container {
+      max-width: 740px;
+      margin: 40px auto 0;
+      padding: 0 20px;
+    }
+
+    .article-header { margin-bottom: 32px; }
+    .article-tags { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .article-tag {
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.04);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+    }
+
+    .article-title {
+      font-size: clamp(28px, 4.5vw, 40px);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -1px;
+      color: #000000;
+      margin-bottom: 16px;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .featured-image-box {
+      margin: 28px 0 40px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    .featured-image {
+      width: 100%;
+      height: auto;
+      max-height: 440px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .prose { font-size: 16.5px; color: #222222; line-height: 1.8; }
+    .prose p { margin-bottom: 24px; }
+    .prose h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin: 42px 0 16px; color: #000000; }
+    .prose h3 { font-size: 19px; font-weight: 600; margin: 32px 0 12px; color: #111111; }
+    .prose ul, .prose ol { margin: 0 0 24px 24px; }
+    .prose li { margin-bottom: 8px; }
+    .prose blockquote {
+      border-left: 3px solid #111111;
+      padding: 12px 20px;
+      margin: 28px 0;
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #444444;
+    }
+
+    .prose code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #D946EF;
+    }
+
+    .prose pre {
+      background: var(--code-bg);
+      color: var(--code-color);
+      padding: 20px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      margin: 28px 0;
+    }
+
+    .prose pre code { background: transparent; padding: 0; color: inherit; font-size: 13.5px; line-height: 1.6; }
+    .prose hr { border: 0; height: 1px; background: var(--border); margin: 48px 0; }
+
+    .article-footer {
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .author-info { display: flex; align-items: center; gap: 12px; }
+    .author-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #000; color: #fff; display: flex; align-items: center;
+      justify-content: center; font-weight: 700; font-size: 14px;
+    }
+    .author-name { font-weight: 600; font-size: 14px; }
+    .author-role { font-size: 12px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <div class="header-anchor">
+    <header class="floating-header">
+      <a href="../index.html" class="brand">
+        <img src="https://spac2.com/favicon.ico" alt="Spac2" class="brand-icon">
+        <span class="brand-title">spac2</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="../index.html" class="back-btn">&larr; Danh sách bài viết</a>
+      </nav>
+    </header>
+  </div>
+
+  <main class="article-container">
+    <header class="article-header">
+      <div class="article-tags">
+        <span class="article-tag">Architecture</span>
+        <span class="article-tag">Serverless</span>
+        <span class="article-tag">Cloudflare</span>
+      </div>
+      <h1 class="article-title">Kiến Trúc Web Tĩnh Serverless Với Cloudflare Workers Và GitHub API</h1>
+      <div class="article-meta">
+        <span>Tác giả: <strong>Spac2 Dev</strong></span>
+        <span>&bull;</span>
+        <time>05/11/2026</time>
+        <span>&bull;</span>
+        <span>5 phút đọc</span>
+      </div>
+    </header>
+
+    <div class="featured-image-box">
+      <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop" alt="Serverless Architecture" class="featured-image">
+    </div>
+
+    <article class="prose">
+      <p>
+        Trong thập kỷ vừa qua, phát triển web đã đi từ việc thuê máy chủ vật lý, VPS, đến container Docker và gần đây nhất là Edge Computing không máy chủ (Serverless). Spac2 Blog được xây dựng dựa trên nguyên lý triệt để: <strong>Zero Database, Pure Static Files, Globally Distributed</strong>.
+      </p>
+
+      <h2>1. Tại Sao Lại Chọn Cách Này?</h2>
+      <p>
+        Khi vận hành một blog nội dung, việc sử dụng các hệ quản trị nội dung nặng nề như WordPress hoặc cơ sở dữ liệu MySQL thường đi kèm với nhiều rủi ro:
+      </p>
+      <ul>
+        <li>Lỗ hổng bảo mật plugin và SQL injection.</li>
+        <li>Tốn chi phí duy trì máy chủ hàng tháng.</li>
+        <li>Thời gian tải trang chậm do phải kết nối cơ sở dữ liệu trên mỗi request.</li>
+      </ul>
+
+      <h2>2. Giải Pháp Git-based Content Swap</h2>
+      <p>
+        Thay vì lưu bài viết vào database, chúng tôi biến GitHub repository thành chính cơ sở dữ liệu phiên bản của mình. Cloudflare Worker chỉ đóng vai trò là một người gác cổng an toàn để tráo đổi nội dung tệp:
+      </p>
+      <pre><code>// Worker tráo file tức thì
+const updatedList = updateListJsContent(oldList, newPost);
+await putGithubFile(config, "list.js", updatedList, commitMessage, sha);</code></pre>
+
+      <p>
+        Tất cả trang đều được lưu dưới dạng file HTML độc lập. Kết quả là tốc độ tải trang đạt mức tối ưu nhất trên toàn cầu nhờ mạng lưới CDN Anycast của Cloudflare.
+      </p>
+    </article>
+
+    <footer class="article-footer">
+      <div class="author-info">
+        <div class="author-avatar">SD</div>
+        <div>
+          <div class="author-name">Spac2 Dev</div>
+          <div class="author-role">Core Infrastructure Engineer</div>
+        </div>
+      </div>
+      <div>
+        <a href="../index.html" class="back-btn">&larr; Quay lại trang chủ</a>
+      </div>
+    </footer>
+  </main>
+
+</body>
+</html>
