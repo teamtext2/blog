@@ -31,25 +31,22 @@
     <link rel="icon" type="image/png" sizes="192x192" href="https://spac2.com/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="https://spac2.com/android-chrome-512x512.png">
 
-    <!-- Google Analytics (gtag.js) -->
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCMEMFLZ14"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
+
         gtag('config', 'G-JCMEMFLZ14');
     </script>
-
-    <!-- Umami Analytics -->
-    <script defer src="https://cloud.umami.is/script.js"
-        data-website-id="c4f68426-cd7b-40ed-b788-74c5305b5122"></script>
+    <script defer src="https://team.spac2.com/pageview/tracker.js"></script>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Spac2 Blog">
     <meta property="og:url" content="https://spac2.com/blog">
-    <meta property="og:title"
-        content="Spac2 Blog: Engineering Architecture, Product Guides & Web OS Updates">
+    <meta property="og:title" content="Spac2 Blog: Engineering Architecture, Product Guides & Web OS Updates">
     <meta property="og:description"
         content="Explore official guides, system architecture deep dives, and product announcements from the Spac2 Engineering Team.">
     <meta property="og:image" content="https://cdn1.spac2.com/app/chat/preview.png">
@@ -60,8 +57,7 @@
     <meta name="twitter:site" content="@spac2com">
     <meta name="twitter:creator" content="@spac2com">
     <meta name="twitter:url" content="https://spac2.com/blog">
-    <meta name="twitter:title"
-        content="Spac2 Blog: Engineering Architecture, Product Guides & Web OS Updates">
+    <meta name="twitter:title" content="Spac2 Blog: Engineering Architecture, Product Guides & Web OS Updates">
     <meta name="twitter:description"
         content="Explore official guides, system architecture deep dives, and product announcements from the Spac2 Engineering Team.">
     <meta name="twitter:image" content="https://cdn1.spac2.com/app/chat/preview.png">
@@ -412,8 +408,17 @@
         }
 
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(0.85);
+            }
         }
 
         .hero-title {
@@ -825,8 +830,15 @@
         }
 
         @keyframes pulse-bg {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.9; }
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.9;
+            }
         }
 
         /* Load More Button */
@@ -1076,7 +1088,8 @@
                 <span class="highlight">Spac2 Blog</span> & Engineering Journal
             </h1>
             <p class="hero-subtitle">
-                Explore technical deep dives, step-by-step product guides, real-time cloud architecture, and release notes across the <strong>Spac2 Web Operating System</strong> ecosystem.
+                Explore technical deep dives, step-by-step product guides, real-time cloud architecture, and release
+                notes across the <strong>Spac2 Web Operating System</strong> ecosystem.
             </p>
 
             <!-- Search & Category Filter -->
@@ -1135,7 +1148,8 @@
         <!-- Ecosystem Bottom CTA -->
         <section class="cta-banner">
             <h3>Experience the Spac2 Web OS Ecosystem</h3>
-            <p>Unified cloud computing, sub-millisecond WebSocket messaging, encrypted WebRTC calling, lossless file sharing, and workspace productivity directly in your browser.</p>
+            <p>Unified cloud computing, sub-millisecond WebSocket messaging, encrypted WebRTC calling, lossless file
+                sharing, and workspace productivity directly in your browser.</p>
             <a href="https://spac2.com" class="btn-cta-main">
                 <span>Explore Spac2.com</span>
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -1367,10 +1381,10 @@
                     postsContainer.innerHTML = `
                         <div class="posts-grid">
                             ${gridPosts.map(post => {
-                                const postUrl = resolvePostUrl(post);
-                                const imgUrl = post.thumbnail || post.image || 'https://spac2.com/apple-touch-icon.png';
-                                const tags = Array.isArray(post.tags) ? post.tags.slice(0, 3) : [];
-                                return `
+                        const postUrl = resolvePostUrl(post);
+                        const imgUrl = post.thumbnail || post.image || 'https://spac2.com/apple-touch-icon.png';
+                        const tags = Array.isArray(post.tags) ? post.tags.slice(0, 3) : [];
+                        return `
                                     <a href="${escapeHtml(postUrl)}" class="post-card">
                                         <div class="post-card-thumb-wrap">
                                             <img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(post.title)}" class="post-card-thumb" loading="lazy"
@@ -1399,7 +1413,7 @@
                                         </div>
                                     </a>
                                 `;
-                            }).join('')}
+                    }).join('')}
                         </div>
                     `;
                 } else {
@@ -1474,4 +1488,3 @@
 </body>
 
 </html>
-
